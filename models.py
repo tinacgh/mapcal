@@ -27,6 +27,6 @@ class Marker(models.Model):
     lng = models.FloatField()
     desc = models.CharField(max_length=60, blank=True)
     def __str__(self):
-        return self.desc
+        return "%s: %f, %f" % (self.desc, self.lat, self.lng)
     def __unicode__(self):
-        return self.desc
+        return "%s: %f, %f" % (self.desc, self.lat, self.lng)
