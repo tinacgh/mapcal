@@ -397,11 +397,6 @@ button.ui-button::-moz-focus-inner {
 	float: left;
 }
 
-/* ADDED */
-.ui-datepicker-current-day {
-    background: #FF3366
-}
-
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {
 	width: auto;
@@ -856,13 +851,15 @@ body .ui-tooltip {
 	color: #c77405;
 	text-decoration: none;
 }
+
+/* CHANGED */
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
 	border: 1px solid #fbd850;
-	background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
+	background: #ff9900;
 	font-weight: bold;
-	color: #eb8f00;
+	color: #FFFFFF;
 }
 .ui-state-active a,
 .ui-state-active a:link,
