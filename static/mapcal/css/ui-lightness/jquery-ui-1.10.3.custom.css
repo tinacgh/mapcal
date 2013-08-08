@@ -397,6 +397,11 @@ button.ui-button::-moz-focus-inner {
 	float: left;
 }
 
+/* ADDED */
+.ui-datepicker-current-day {
+    background: #FF3366
+}
+
 /* with multiple calendars */
 .ui-datepicker.ui-datepicker-multi {
 	width: auto;
