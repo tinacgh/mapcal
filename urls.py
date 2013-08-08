@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^bytag/$', views.bytag),
     url(r'^(?P<appt_id>\d+)/detail/$', views.detail, name="appt_detail"),
     url(r'^add/$', views.add),
+    url(r'^delete/$', views.delete_appt),
 )
                        

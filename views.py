@@ -91,3 +91,10 @@ def add(request):
         
         return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
     return render(request, 'mapcal/addform.html')
+
+def delete_appt(request):
+    if request.method == 'POST':
+        req_id = request.POST.get('apptid', '')
+        appt = Appt.objects.get(pk=req_id)
+        appt.delete()
+    return HttpResponseRedirect('/mapcal/')

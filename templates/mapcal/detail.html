@@ -55,8 +55,17 @@ map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
 {% include "mapcal/nav.html" %}
 
 <h2>{{ appt }}</h2>
+
 {{ appt.time|date:"D, d M Y, P" }}<br><br>
 {{ appt.notes }}
+
+<form action="/mapcal/delete/" method="post">
+  <input type="hidden" name="apptid" value="{{ appt.id }}">
+  <input type="submit" value="Delete appt.">
+  {% csrf_token %}
+</form>
+
+
 <table border="0" width="100%" height="100%">
   <tr>
     <td valign="top">
