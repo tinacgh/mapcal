@@ -23,7 +23,7 @@ function addMarker(lat, lng) {
 
 
   function initialize() {
-  var mapOptions = { center: new google.maps.LatLng(0.0, 0.0), zoom: 0,
+  var mapOptions = { center: new google.maps.LatLng(0.0, 0.0), zoom: 16,
   mapTypeId: google.maps.MapTypeId.ROADMAP };
   map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
 
@@ -34,9 +34,10 @@ function addMarker(lat, lng) {
 
 {% for marker in appt.marker_set.all %}
 addMarker({{ marker.lat }}, {{ marker.lng }});
-{% endfor %}
+map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
+  {% endfor %}
 
-map.setCenter(newLatLng(45,-74));
+
     
   }
 
