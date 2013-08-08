@@ -79,7 +79,7 @@ map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
 
 <script type="text/javascript">
 $("#datepicker").datepicker();
-$("#datepicker").datepicker("setDate", new Date("{{ appt.time.isoformat }}"));
+$("#datepicker").datepicker("setDate", new Date({{ appt.time|date:'Y' }}, {{ appt.time|date:'m' }} - 1, {{ appt.time|date:'d' }}));
 </script>
 
 </body>
