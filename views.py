@@ -4,12 +4,21 @@ from django.shortcuts import render, get_object_or_404
 from mapcal.models import Appt, Marker, Tag
 from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import datetime
 
 def name_id(obj):
     return str(obj) + " " + str(obj.id)
 
 def queryset_str(qs):
     return " ".join([name_id(i) for i in qs])
+
+def listappts(request):
+    appts = Appt.objects.order_by('time').filter(time__gte=timezone.now())
+    return render(request, 'mapcal/listappts.html', { 'appts': appts })
+
+def listallappts(request):
+    appts = Appt.objects.order_by('time')
+    return render(request, 'mapcal/listappts.html', { 'appts': appts })
 
 def bytag(request):
     appts_by_user = Appt.objects.filter(user__username="admin")
@@ -29,23 +38,39 @@ def add(request):
         req_desc = request.POST.get('desc', '')
         req_notes = request.POST.get('notes', '')
         
-        req_tag1 = request.POST.get('tag1', '')
+        req_tag1 = request.POST.get('tag1', 'untagged')
         req_tag2 = request.POST.get('tag2', '')
         req_tag3 = request.POST.get('tag3', '')
         
         req_nummarkers = request.POST.get('nummarkers', '')
         req_markercoords = request.POST.get('markercoords', '')
 
+        req_ymd = request.POST.get('ymd', '')
+        req_time = request.POST.get('time', '12:00')
+
         user = User.objects.get(username=req_username)
 
-        if (req_tag1 != ""):
+        if req_ymd == "":
+            req_ymd = datetime.now().strftime("%Y-%m-%d")
+
+        if req_tag1 == "":
+            req_tag1 = "untagged"
+
+        if req_time == "":
+            req_time = "12:00"
+
+        if req_tag1 != "":
             try:
                 tag1 = Tag.objects.get(name=req_tag1)
             except Tag.DoesNotExist:
                 tag1 = Tag(name=req_tag1)
                 tag1.save()
 
-        newappt = Appt(user=user, time=timezone.now(),
+        year, month, day = map(int, req_ymd.split("-"))
+        hour, mins = map(int, req_time.split(":"))
+        apptdate = datetime(year, month, day, hour, mins)
+
+        newappt = Appt(user=user, time=apptdate,
                        desc=req_desc, notes=req_notes)
         newappt.save()
         newappt.tags.add(tag1)
@@ -64,5 +89,5 @@ def add(request):
         
         resp += '<p><a href="/mapcal/add">add new appt</a></p>'
         
-        return HttpResponse(resp)
+        return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
     return render(request, 'mapcal/addform.html')

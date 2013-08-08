@@ -7,6 +7,8 @@ from mapcal import views
 #  ('mapcal.urls' is inside quotes)
 
 urlpatterns = patterns('',
+    url(r'^$', views.listappts),
+    url(r'^all/$', views.listallappts),
     url(r'^bytag/$', views.bytag),
     url(r'^(?P<appt_id>\d+)/detail/$', views.detail, name="appt_detail"),
     url(r'^add/$', views.add),

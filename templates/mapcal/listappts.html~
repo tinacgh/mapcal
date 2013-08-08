@@ -1,0 +1,7 @@
+<html>
+  <body>
+    {% for appt in appts %}
+     {{ appt.desc }}
+    {% endfor %}
+  </body>
+</html>

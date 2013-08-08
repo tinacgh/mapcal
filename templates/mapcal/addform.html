@@ -48,16 +48,9 @@ function addMarker(lat, lng) {
   mapTypeId: google.maps.MapTypeId.ROADMAP };
   map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
 
-//addMarker(45, -74);
-//addMarker(44, -73);
-//addMarker(43, -72);
-
-
-    
 map.setCenter(newLatLng(45,-74));
 
     google.maps.event.addListener(map, 'click', function(event) {
-        //alert("map clicked");
         clickLat = event.latLng.lat();
         clickLng = event.latLng.lng();
         addMarker(clickLat, clickLng);
@@ -76,29 +69,31 @@ map.setCenter(newLatLng(45,-74));
 
 </head>
 <body>
+  {% include "mapcal/nav.html" %}
+
 <form action="/mapcal/add/" method="post">
 <input type="hidden" name="username" value="tina">
 <input type="hidden" name="nummarkers" id="nummarkers" value="0">
 <input type="hidden" name="markercoords" id="markercoords">
 
-  <p>Date: <input type="text" id="datepicker"></p>
+  <p>Date: <input type="text" name="ymd" id="datepicker"> 24-h time (hh:mm): <input type="text" name="time"></p>
 
 <p>description: <input type="text" name="desc"></p>
 <p>notes: <textarea name="notes" rows="3" cols="40"></textarea></p>
-<p>tag 1: <input type="text" name="tag1" value="fun"></p>
-<p>tag 2: <input type="text" name="tag2"></p>
-<p>tag 3: <input type="text" name="tag3"></p>
+<p>tag 1: <input type="text" name="tag1"></p>
 
-<input type="submit" value="Add appt">
-{% csrf_token %}
-</form>
 
 Address: <input type="text" name="address" id="addressInput">
-  <button id="geocodeAddress" onclick="addressToLatLng($('#addressInput').val());">find</button>
+  <button type="button" id="geocodeAddress" onclick="addressToLatLng($('#addressInput').val());">find</button>
+  <input type="submit" value="Add appt"><br><br>
   <div id="mymap" width="100%"></div>
 
+{% csrf_token %}
+
+</form>
+
+
 <script type="text/javascript">
-  //
   $("#datepicker").datepicker();
   $("#datepicker").datepicker("option", "dateFormat", "yy-mm-dd");
 </script>
