@@ -16,32 +16,34 @@ def queryset_str(qs):
 
 @login_required
 def listappts(request):
-    appts = Appt.objects.order_by('time').filter(time__gte=timezone.now())
-    return render(request, 'mapcal/listappts.html', { 'appts': appts })
+    appts = Appt.objects.filter(user__username=request.user.username).order_by('time').filter(time__gte=timezone.now())
+    return render(request, 'mapcal/listappts.html', { 'appts': appts, 'request': request})
 
 @login_required
 def listallappts(request):
-    appts = Appt.objects.order_by('time')
-    return render(request, 'mapcal/listappts.html', { 'appts': appts })
+    appts = Appt.objects.filter(user__username=request.user.username).order_by('time')
+    return render(request, 'mapcal/listappts.html', { 'appts': appts, 'request': request})
 
 @login_required
 def bytag(request):
-    appts_by_user = Appt.objects.filter(user__username="admin")
+    appts_by_user = Appt.objects.filter(user__username=request.user.username)
     appts_work = appts_by_user.filter(tags__name="work")
     appts_fun = Appt.objects.filter(tags__name="fun")
     resp = queryset_str(appts_work) + " | " + queryset_str(appts_fun)
-    return HttpResponse(resp)
+    return HttpResponse(resp, { 'request': request})
 
 @login_required
 def detail(request, appt_id):
     appt = get_object_or_404(Appt, pk=appt_id)
-    return render(request, 'mapcal/detail.html', {'appt': appt})
+    if appt.user.username == request.user.username:
+        return render(request, 'mapcal/detail.html', {'appt': appt, 'request': request})
+    else:
+        return HttpResponse("Not your appt")
 
 @login_required
 def add(request):
     if request.method == 'POST':
         resp = ""
-        req_username = request.POST.get('username', '')
         req_desc = request.POST.get('desc', '')
         req_notes = request.POST.get('notes', '')
         
@@ -55,7 +57,7 @@ def add(request):
         req_ymd = request.POST.get('ymd', '')
         req_time = request.POST.get('time', '12:00')
 
-        user = User.objects.get(username=req_username)
+        user = User.objects.get(username=request.user.username)
 
         if req_ymd == "":
             req_ymd = datetime.now().strftime("%Y-%m-%d")
@@ -97,7 +99,7 @@ def add(request):
         resp += '<p><a href="/mapcal/add">add new appt</a></p>'
         
         return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
-    return render(request, 'mapcal/addform.html')
+    return render(request, 'mapcal/addform.html', {'request': request})
 
 @login_required
 def delete_appt(request):
