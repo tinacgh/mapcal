@@ -1,0 +1,10 @@
+<html>
+  <body>
+    Login<br><br>
+    <form action="/mapcal/accounts/dologin/" method="post">
+    {{ form.as_table }}<br>
+    <input type="submit">
+    {% csrf_token %}
+    </form>
+  </body>
+</html>

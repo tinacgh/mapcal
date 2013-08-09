@@ -1,6 +1,8 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 from mapcal.models import Appt, Marker, Tag
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -12,14 +14,17 @@ def name_id(obj):
 def queryset_str(qs):
     return " ".join([name_id(i) for i in qs])
 
+@login_required
 def listappts(request):
     appts = Appt.objects.order_by('time').filter(time__gte=timezone.now())
     return render(request, 'mapcal/listappts.html', { 'appts': appts })
 
+@login_required
 def listallappts(request):
     appts = Appt.objects.order_by('time')
     return render(request, 'mapcal/listappts.html', { 'appts': appts })
 
+@login_required
 def bytag(request):
     appts_by_user = Appt.objects.filter(user__username="admin")
     appts_work = appts_by_user.filter(tags__name="work")
@@ -27,10 +32,12 @@ def bytag(request):
     resp = queryset_str(appts_work) + " | " + queryset_str(appts_fun)
     return HttpResponse(resp)
 
+@login_required
 def detail(request, appt_id):
     appt = get_object_or_404(Appt, pk=appt_id)
     return render(request, 'mapcal/detail.html', {'appt': appt})
 
+@login_required
 def add(request):
     if request.method == 'POST':
         resp = ""
@@ -92,9 +99,25 @@ def add(request):
         return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
     return render(request, 'mapcal/addform.html')
 
+@login_required
 def delete_appt(request):
     if request.method == 'POST':
         req_id = request.POST.get('apptid', '')
         appt = Appt.objects.get(pk=req_id)
         appt.delete()
     return HttpResponseRedirect('/mapcal/')
+
+def mapcal_login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return HttpResponseRedirect('/mapcal/')
+    else:
+        return HttpResponse('User not found or password incorrect. <a href="/mapcal/accounts/login/">try again</a>')
+
+def logout_view(request):
+    logout(request)
+    return render(request, 'registration/logout.html')
