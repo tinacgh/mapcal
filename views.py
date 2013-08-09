@@ -106,7 +106,8 @@ def delete_appt(request):
     if request.method == 'POST':
         req_id = request.POST.get('apptid', '')
         appt = Appt.objects.get(pk=req_id)
-        appt.delete()
+        if appt.user.username == request.user.username:
+            appt.delete()
     return HttpResponseRedirect('/mapcal/')
 
 def mapcal_login(request):
