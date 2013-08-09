@@ -54,8 +54,11 @@ map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
 <body>
 {% include "mapcal/nav.html" %}
 
-<h2>{{ appt }}</h2>
+<table border="0" width="100%" height="100%">
+  <tr>
+    <td valign="top">
 
+<b>{{ appt }}</b> - 
 {{ appt.time|date:"D, d M Y, P" }}<br><br>
 {{ appt.notes }}
 
@@ -65,10 +68,6 @@ map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
   {% csrf_token %}
 </form>
 
-
-<table border="0" width="100%" height="100%">
-  <tr>
-    <td valign="top">
       <div id="datepicker" width="100%"></div>
     </td>
     <td width="70%" height="500px" valign="top">
