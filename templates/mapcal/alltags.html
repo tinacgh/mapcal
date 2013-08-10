@@ -1,0 +1,9 @@
+<html>
+  <body>
+    {% include "mapcal/nav.html" %}
+
+    {% for tag in tags %}
+    <a href="/mapcal/{{ tag.id }}/tag/">{{ tag.name }}</a>{% if not forloop.last %} | {% endif %}
+    {% endfor %}
+  </body>
+</html>

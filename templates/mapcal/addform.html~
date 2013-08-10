@@ -22,26 +22,18 @@ function addMarker(lat, lng) {
   markarr.push(tmpmarker);
 }
 
-function formatLatLng(latLng) {
-  return latLng.lat() + "," + latLng.lng();
-}
-
-function incNumMarkers() {
-  $("#nummarkers").val(parseInt($("#nummarkers").val()) + 1);
-}
-
-function addToMarkerCoords(txt) {
-  $("#markercoords").val($("#markercoords").val() + txt + ";");
-}
-  
+    function formatLatLng(latLng) {
+      return latLng.lat() + "," + latLng.lng();
+    }
+    
 
     var geocoder = new google.maps.Geocoder();
 
     function addressToLatLng(addressStr) {
       geocoder.geocode({'address': addressStr}, function(results, status) {
         if(status == google.maps.GeocoderStatus.OK) {
-          incNumMarkers();
-          addToMarkerCoords(formatLatLng(results[0].geometry.location));
+          $("#nummarkers").val(parseInt($("#nummarkers").val()) + 1);
+          $("#markercoords").val($("#markercoords").val() + formatLatLng(results[0].geometry.location) + ";");
           console.log(formatLatLng(results[0].geometry.location));
           map.setCenter(results[0].geometry.location);
           addMarker(results[0].geometry.location.lat(), results[0].geometry.location.lng());
@@ -56,12 +48,6 @@ function addToMarkerCoords(txt) {
   mapTypeId: google.maps.MapTypeId.ROADMAP };
   map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
 
-  {% for marker in appt.marker_set.all %}
-    addMarker({{ marker.lat }}, {{ marker.lng }});
-    incNumMarkers();
-    addToMarkerCoords("{{ marker.lat }},{{ marker.lng}}");
-  {% endfor %}
-  
 map.setCenter(newLatLng(45,-74));
 
     google.maps.event.addListener(map, 'click', function(event) {
@@ -86,14 +72,13 @@ map.setCenter(newLatLng(45,-74));
   {% include "mapcal/nav.html" %}
 
 <form action="/mapcal/add/" method="post">
-  <input type="hidden" name="del_id" value="{{ appt.id }}">
-  <input type="hidden" name="nummarkers" id="nummarkers" value="0">
-  <input type="hidden" name="markercoords" id="markercoords">
+<input type="hidden" name="nummarkers" id="nummarkers" value="0">
+<input type="hidden" name="markercoords" id="markercoords">
 
-  <p>Date: <input type="text" name="ymd" id="datepicker"> 24-h time (hh:mm): <input type="text" name="time" value="{{ appt.time|date:"H:i" }}"></p>
+  <p>Date: <input type="text" name="ymd" id="datepicker"> 24-h time (hh:mm): <input type="text" name="time"></p>
 
-<p>description: <input type="text" name="desc" value="{{ appt.desc }}"></p>
-<p>notes: <textarea name="notes" rows="3" cols="40">{{ appt.notes }}</textarea></p>
+<p>description: <input type="text" name="desc"></p>
+<p>notes: <textarea name="notes" rows="3" cols="40"></textarea></p>
 <p>tags: <input type="text" name="tag1"> <input type="text" name="tag2"> <input type="text" name="tag3"></p>
 
 
@@ -109,13 +94,7 @@ Address: <input type="text" name="address" id="addressInput">
 
 <script type="text/javascript">
   $("#datepicker").datepicker();
-$("#datepicker").datepicker("option", "dateFormat", "yy-mm-dd");
-
-{% if appt %}
-  $("#datepicker").datepicker("setDate",
-  new Date({{ appt.time|date:"Y" }}, {{ appt.time|date:"m" }} - 1,
-           {{ appt.time|date:"d" }}));
-{% endif %}
+  $("#datepicker").datepicker("option", "dateFormat", "yy-mm-dd");
 </script>
 
 </body>

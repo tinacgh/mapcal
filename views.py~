@@ -17,43 +17,33 @@ def queryset_str(qs):
 @login_required
 def listappts(request):
     appts = Appt.objects.filter(user__username=request.user.username).order_by('time').filter(time__gte=timezone.now())
-    return render(request, 'mapcal/listappts.html', { 'appts': appts })
+    return render(request, 'mapcal/listappts.html', { 'appts': appts, 'request': request})
 
 @login_required
 def listallappts(request):
     appts = Appt.objects.filter(user__username=request.user.username).order_by('time')
-    return render(request, 'mapcal/listappts.html', { 'appts': appts })
+    return render(request, 'mapcal/listappts.html', { 'appts': appts, 'request': request})
 
 @login_required
-def alltags(request):
-    tags = Tag.objects.filter(appt__user__username=request.user.username).distinct().order_by('name')
-    return render(request, 'mapcal/alltags.html', { 'tags': tags })
-
-@login_required
-def bytag(request, tag_id):
+def bytag(request):
     appts_by_user = Appt.objects.filter(user__username=request.user.username)
-    appts_tag = appts_by_user.filter(tags__id=tag_id)
-    tag = get_object_or_404(Tag, pk=tag_id)
-    return render(request, 'mapcal/bytag.html', { 'appts': appts_tag, 'tag': tag })
+    appts_work = appts_by_user.filter(tags__name="work")
+    appts_fun = Appt.objects.filter(tags__name="fun")
+    resp = queryset_str(appts_work) + " | " + queryset_str(appts_fun)
+    return HttpResponse(resp, { 'request': request})
 
 @login_required
 def detail(request, appt_id):
     appt = get_object_or_404(Appt, pk=appt_id)
     if appt.user.username == request.user.username:
-        return render(request, 'mapcal/detail.html', {'appt': appt })
+        return render(request, 'mapcal/detail.html', {'appt': appt, 'request': request})
     else:
         return HttpResponse("Not your appt")
 
 @login_required
-def edit(request, appt_id):
-    appt = get_object_or_404(Appt, pk=appt_id)
-    return render(request, 'mapcal/addform.html', { 'appt': appt })
-    
-@login_required
 def add(request):
     if request.method == 'POST':
         resp = ""
-        req_del_id = request.POST.get('del_id', '')
         req_desc = request.POST.get('desc', '')
         req_notes = request.POST.get('notes', '')
         
@@ -68,12 +58,6 @@ def add(request):
         req_time = request.POST.get('time', '12:00')
 
         user = User.objects.get(username=request.user.username)
-        
-# delete existing entry if coming from edit
-        if req_del_id != "":
-            appt = Appt.objects.get(pk=int(req_del_id))
-            if appt.user.username == request.user.username:
-                appt.delete()
 
         if req_ymd == "":
             req_ymd = datetime.now().strftime("%Y-%m-%d")
@@ -84,6 +68,13 @@ def add(request):
         if req_time == "":
             req_time = "12:00"
 
+        if req_tag1 != "":
+            try:
+                tag1 = Tag.objects.get(name=req_tag1)
+            except Tag.DoesNotExist:
+                tag1 = Tag(name=req_tag1)
+                tag1.save()
+
         year, month, day = map(int, req_ymd.split("-"))
         hour, mins = map(int, req_time.split(":"))
         apptdate = datetime(year, month, day, hour, mins)
@@ -91,31 +82,8 @@ def add(request):
         newappt = Appt(user=user, time=apptdate,
                        desc=req_desc, notes=req_notes)
         newappt.save()
+        newappt.tags.add(tag1)
         
-        if req_tag1 != "":
-            try:
-                tag1 = Tag.objects.get(name=req_tag1)
-            except Tag.DoesNotExist:
-                tag1 = Tag(name=req_tag1)
-                tag1.save()
-            newappt.tags.add(tag1)
-
-        if req_tag2 != "":
-            try:
-                tag2 = Tag.objects.get(name=req_tag2)
-            except Tag.DoesNotExist:
-                tag2 = Tag(name=req_tag2)
-                tag2.save()
-            newappt.tags.add(tag2)
-
-        if req_tag3 != "":
-            try:
-                tag3 = Tag.objects.get(name=req_tag3)
-            except Tag.DoesNotExist:
-                tag3 = Tag(name=req_tag3)
-                tag3.save()
-            newappt.tags.add(tag3)
-
         
         resp += "tag1 id: " + str(tag1.id) + " "
         
@@ -131,7 +99,7 @@ def add(request):
         resp += '<p><a href="/mapcal/add">add new appt</a></p>'
         
         return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
-    return render(request, 'mapcal/addform.html')
+    return render(request, 'mapcal/addform.html', {'request': request})
 
 @login_required
 def delete_appt(request):

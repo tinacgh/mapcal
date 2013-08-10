@@ -54,12 +54,7 @@ function addMarker(lat, lng) {
     <td valign="top">
 
       <b>{{ appt }}</b>
-      ({% for tag in appt.tags.all %}
-      {{ tag.name }} {% if not forloop.last %}|{% endif %}
-      {% endfor %})
-
-      | <a href="/mapcal/{{ appt.id }}/edit/">Edit</a>
-      <br>
+      ({% for tag in appt.tags.all %} {{ tag.name }} | {% endfor %})<br>
       
 {{ appt.time|date:"D, d M Y, P" }}<br><br>
 {{ appt.notes }}

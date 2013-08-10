@@ -2,9 +2,16 @@
   <body>
     {% include "mapcal/nav.html" %}
 
+    <table border="0">
     {% for appt in appts %}
-    <a href="/mapcal/{{ appt.id }}/detail">{{ appt.time }}: {{ appt.desc }}</a>
-    <br>
-    {% endfor %}
+    <tr><td>
+        <a href="/mapcal/{{ appt.id }}/detail">{{ appt.time }}: {{ appt.desc }}</a>
+    </td><td>
+      {% for tag in appt.tags.all %}
+      <a href="/mapcal/{{ tag.id }}/tag/">{{ tag.name }}</a>{% if not forloop.last %},{% endif %} 
+      {% endfor %}
+      </td></tr>
+      {% endfor %}
+      </table>
   </body>
 </html>

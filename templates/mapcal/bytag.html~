@@ -1,0 +1,10 @@
+<html>
+  <body>
+    {% include "mapcal/nav.html" %}
+
+    {% for tag in tags %}
+    {{ tag.name }} / {{ tag.id }}
+    <br>
+    {% endfor %}
+  </body>
+</html>
