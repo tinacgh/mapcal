@@ -52,7 +52,7 @@ function addToMarkerCoords(txt) {
     }
 
   function initialize() {
-  var mapOptions = { center: new google.maps.LatLng(0.0, 0.0), zoom: 0,
+  var mapOptions = { center: new google.maps.LatLng(-23.55, -46.64), zoom: 14,
   mapTypeId: google.maps.MapTypeId.ROADMAP };
   map = new google.maps.Map(document.getElementById("mymap"), mapOptions);
 
@@ -60,9 +60,9 @@ function addToMarkerCoords(txt) {
     addMarker({{ marker.lat }}, {{ marker.lng }});
     incNumMarkers();
     addToMarkerCoords("{{ marker.lat }},{{ marker.lng}}");
+    map.setCenter(newLatLng({{ marker.lat }}, {{ marker.lng }}));
   {% endfor %}
   
-map.setCenter(newLatLng(45,-74));
 
     google.maps.event.addListener(map, 'click', function(event) {
         clickLat = event.latLng.lat();
@@ -85,27 +85,47 @@ map.setCenter(newLatLng(45,-74));
 <body>
   {% include "mapcal/nav.html" %}
 
+  <table border="0" width="100%" height="100%">
+    <tr>
+      <td valign="top">
+  
 <form action="/mapcal/add/" method="post">
   <input type="hidden" name="del_id" value="{{ appt.id }}">
   <input type="hidden" name="nummarkers" id="nummarkers" value="0">
   <input type="hidden" name="markercoords" id="markercoords">
 
-  <p>Date: <input type="text" name="ymd" id="datepicker"> 24-h time (hh:mm): <input type="text" name="time" value="{{ appt.time|date:"H:i" }}"></p>
+  <p>Date:<br>
+    <input type="text" name="ymd" id="datepicker">
+<br>
+24-h time (hh:mm):<br>
+<input type="text" name="time" value="{{ appt.time|date:"H:i" }}"></p>
 
-<p>description: <input type="text" name="desc" value="{{ appt.desc }}"></p>
-<p>notes: <textarea name="notes" rows="3" cols="40">{{ appt.notes }}</textarea></p>
-<p>tags: <input type="text" name="tag1"> <input type="text" name="tag2"> <input type="text" name="tag3"></p>
+  <p>description:<br>
+    <input type="text" name="desc" value="{{ appt.desc }}"></p>
+  <p>notes:<br>
+    <textarea name="notes" rows="3" cols="28">{{ appt.notes }}</textarea></p>
+  <p>tags:<br>
+  <input type="text" name="tag1" value="{{ tag1 }}"><br>
+  <input type="text" name="tag2" value="{{ tag2 }}"><br>
+  <input type="text" name="tag3" value="{{ tag3 }}">
+  </p>
 
 
-Address: <input type="text" name="address" id="addressInput">
-  <button type="button" id="geocodeAddress" onclick="addressToLatLng($('#addressInput').val());">find</button>
-  <input type="submit" value="Add appt"><br><br>
-  <div id="mymap" width="100%"></div>
-
+  Address:<br>
+  <input type="text" name="address" id="addressInput">
+  <button type="button" id="geocodeAddress" onclick="addressToLatLng($('#addressInput').val());">find address</button><br><br>
+  
+  <input type="submit" value="{% if appt %}Update{% else %}Add{% endif %} appt"><br><br>
 {% csrf_token %}
 
 </form>
-
+      </td>
+      <td width="70%" height="500px" valign="top">
+        <div id="mymap" style="width: 100%; height: 100%"></div>
+      </td>
+    </tr>
+  </table>
+        
 
 <script type="text/javascript">
   $("#datepicker").datepicker();

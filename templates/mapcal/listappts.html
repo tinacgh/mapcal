@@ -6,7 +6,9 @@
     {% for appt in appts %}
     <tr><td>
         <a href="/mapcal/{{ appt.id }}/detail">{{ appt.time }}: {{ appt.desc }}</a>
-    </td><td>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td>
       {% for tag in appt.tags.all %}
       <a href="/mapcal/{{ tag.id }}/tag/">{{ tag.name }}</a>{% if not forloop.last %},{% endif %} 
       {% endfor %}

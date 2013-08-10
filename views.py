@@ -47,7 +47,17 @@ def detail(request, appt_id):
 @login_required
 def edit(request, appt_id):
     appt = get_object_or_404(Appt, pk=appt_id)
-    return render(request, 'mapcal/addform.html', { 'appt': appt })
+    tags = appt.tags.all()
+    tag1 = ""
+    tag2 = ""
+    tag3 = ""
+    if len(tags) > 0:
+        tag1 = tags[0]
+        if len(tags) > 1:
+            tag2 = tags[1]
+            if len(tags) > 2:
+                tag3 = tags[2]
+    return render(request, 'mapcal/addform.html', { 'appt': appt, 'tag1': tag1, 'tag2': tag2, 'tag3': tag3 })
     
 @login_required
 def add(request):

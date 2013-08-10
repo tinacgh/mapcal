@@ -1,7 +1,7 @@
 <html>
   <body>
     {% include "mapcal/nav.html" %}
-
+    <b>{{ tag.name }}</b><br><br>
     {% for appt in appts %}
     <a href="/mapcal/{{ appt.id }}/detail/">{{ appt.desc }}</a>
     <br>
