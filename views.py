@@ -32,7 +32,7 @@ def alltags(request):
 @login_required
 def bytag(request, tag_id):
     appts_by_user = Appt.objects.filter(user__username=request.user.username)
-    appts_tag = appts_by_user.filter(tags__id=tag_id)
+    appts_tag = appts_by_user.filter(tags__id=tag_id).order_by('time')
     tag = get_object_or_404(Tag, pk=tag_id)
     return render(request, 'mapcal/bytag.html', { 'appts': appts_tag, 'tag': tag })
 
