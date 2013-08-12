@@ -58,7 +58,8 @@ function addMarker(lat, lng) {
       {{ tag.name }} {% if not forloop.last %}|{% endif %}
       {% endfor %})
 
-      | <a href="/mapcal/{{ appt.id }}/edit/">Edit</a>
+      | <a href="/mapcal/{{ appt.id }}/edit/">Edit</a> |
+      <a href="http://freezoo.alwaysdata.net/free/googlemaps/geocodeprint.html" target="_blank">b&amp;w map</a>
       <br>
       
 {{ appt.time|date:"D, d M Y, P" }}<br><br>
