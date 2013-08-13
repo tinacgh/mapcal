@@ -5,7 +5,7 @@
     <table border="0">
     {% for appt in appts %}
     <tr><td>
-        <a href="/mapcal/{{ appt.id }}/detail">{{ appt.time }}: {{ appt.desc }}</a>
+        <a href="/mapcal/{{ appt.id }}/detail">{{ appt.time|date:"D, d M Y, P" }}: {{ appt.desc }}</a>
       </td>
       <td>&nbsp;&nbsp;&nbsp;</td>
       <td>

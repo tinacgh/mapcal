@@ -1,9 +1,9 @@
 <html>
   <body>
     {% include "mapcal/nav.html" %}
-
-    {% for tag in tags %}
-    {{ tag.name }} / {{ tag.id }}
+    <b>{{ tag.name }}</b><br><br>
+    {% for appt in appts %}
+    <a href="/mapcal/{{ appt.id }}/detail/">{{ appt.time }}: {{ appt.desc }}</a>
     <br>
     {% endfor %}
   </body>

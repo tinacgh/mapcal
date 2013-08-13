@@ -3,7 +3,7 @@
     {% include "mapcal/nav.html" %}
     <b>{{ tag.name }}</b><br><br>
     {% for appt in appts %}
-    <a href="/mapcal/{{ appt.id }}/detail/">{{ appt.time }}: {{ appt.desc }}</a>
+    <a href="/mapcal/{{ appt.id }}/detail/">{{ appt.time|date:"D, d M Y, P" }}: {{ appt.desc }}</a>
     <br>
     {% endfor %}
   </body>
