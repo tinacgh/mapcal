@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Monthly view</title>
+  </head>
+  
+  <body>
+    {% include "mapcal/nav.html" %}
+
+<!-- generate monthly calendar in views, with first day as sunday,
+most likely, of previous month -->
+    <table border = 1>
+{% for n in placeholder %}
+<tr><td>
+    {{ n }} <br>
+    {% for day in days %}
+    {% ifequal day.d n %}
+      {{ day.detail }} <br>
+    {% endifequal %}
+    {% endfor %}
+    </td></tr>
+{% endfor %}
+  </body>
+</html>

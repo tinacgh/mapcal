@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^accounts/dologin/$', views.mapcal_login),
     url(r'^accounts/logout/$', views.logout_view),
     url(r'^(?P<appt_id>\d+)/edit/$', views.edit),
+    url(r'^month/$', views.monthview),
 )

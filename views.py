@@ -24,6 +24,27 @@ def listallappts(request):
     appts = Appt.objects.filter(user__username=request.user.username).order_by('time')
     return render(request, 'mapcal/listappts.html', { 'appts': appts })
 
+class Day(object):
+    def __init__(self, d):
+        self.d = d
+
+@login_required
+def monthview(request):
+    timenow = datetime.now()
+    monthstart = datetime(timenow.year, timenow.month, 1)
+    if timenow.month == 12:
+        monthend = datetime(timenow.year+1, 1, 1)
+    else:
+        monthend = datetime(timenow.year, timenow.month+1, 1)
+    appts = Appt.objects.filter(user__username=request.user.username).order_by('time').filter(time__gte=monthstart).filter(time__lt=monthend)
+    days = []
+    for appt in appts:
+        day = Day(appt.time.day)
+        day.detail = appt.desc
+        days.append(day)
+    placeholder = list(range(32))
+    return render(request, 'mapcal/month.html', { 'days': days, 'placeholder': placeholder })
+
 @login_required
 def alltags(request):
     tags = Tag.objects.filter(appt__user__username=request.user.username).distinct().order_by('name')
