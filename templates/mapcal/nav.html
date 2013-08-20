@@ -3,7 +3,8 @@
       <a href="/mapcal/all/">View all appts.</a> |
       <a href="/mapcal/">View current appts.</a> |
       <a href="/mapcal/alltags">Browse tags</a> |
-      <a href="/mapcal/add/">Add new appt.</a>
+      <a href="/mapcal/{% now "Y" %}/{% now "n" %}/month/">Current month</a> |
+      <a href="/mapcal/{% now "Y" %}/{% now "n" %}/{% now "d" %}/add/">Add new appt.</a>
       <br>
       <i>{% now "D, d M Y, P" %}</i>
     </td>

@@ -7,6 +7,7 @@ from mapcal.models import Appt, Marker, Tag
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import datetime
+from calendar import monthrange
 
 def name_id(obj):
     return str(obj) + " " + str(obj.id)
@@ -29,21 +30,51 @@ class Day(object):
         self.d = d
 
 @login_required
-def monthview(request):
-    timenow = datetime.now()
-    monthstart = datetime(timenow.year, timenow.month, 1)
+def monthview(request, year, month):
+    try:
+        yr = int(year)
+        mo = int(month)
+    except:
+        return HttpResponse("Could not understand year or month")
+
+    if yr < 2012 or mo < 1 or mo > 12:
+        return HttpResponse("Time outside valid range.")
+    
+    timenow = datetime(yr, mo, 1)
     if timenow.month == 12:
         monthend = datetime(timenow.year+1, 1, 1)
     else:
         monthend = datetime(timenow.year, timenow.month+1, 1)
-    appts = Appt.objects.filter(user__username=request.user.username).order_by('time').filter(time__gte=monthstart).filter(time__lt=monthend)
+    appts = Appt.objects.filter(user__username=request.user.username).order_by('time').filter(time__gte=timenow).filter(time__lt=monthend)
     days = []
     for appt in appts:
         day = Day(appt.time.day)
         day.detail = appt.desc
+        day.id = appt.id
         days.append(day)
-    placeholder = list(range(32))
-    return render(request, 'mapcal/month.html', { 'days': days, 'placeholder': placeholder })
+
+    now_weekday = (timenow.weekday() + 1) % 7
+    daystoskip = [""] * now_weekday
+    placeholder = daystoskip + list(range(1, monthrange(yr, mo)[1]+1))
+
+    if mo == 1:
+        prevyear = yr - 1
+        prevmonth = 12
+    else:
+        prevyear = yr
+        prevmonth = mo - 1
+
+    if mo == 12:
+        nextyear = yr + 1
+        nextmonth = 1
+    else:
+        nextyear = yr
+        nextmonth = mo + 1
+        
+    prevlink = str(prevyear) + "/" + str(prevmonth)
+    nextlink = str(nextyear) + "/" + str(nextmonth)
+    long_month = timenow.strftime("%B")
+    return render(request, 'mapcal/month.html', { 'days': days, 'placeholder': placeholder, 'nextlink': nextlink, 'prevlink': prevlink, 'yr': yr, 'mo': mo, 'longmonth': long_month, 'year': yr })
 
 @login_required
 def alltags(request):
@@ -81,7 +112,7 @@ def edit(request, appt_id):
     return render(request, 'mapcal/addform.html', { 'appt': appt, 'tag1': tag1, 'tag2': tag2, 'tag3': tag3 })
     
 @login_required
-def add(request):
+def add(request, year, month, day):
     if request.method == 'POST':
         resp = ""
         req_del_id = request.POST.get('del_id', '')
@@ -162,7 +193,10 @@ def add(request):
         resp += '<p><a href="/mapcal/add">add new appt</a></p>'
         
         return HttpResponseRedirect('/mapcal/'+str(newappt.id)+'/detail/')
-    return render(request, 'mapcal/addform.html')
+    #datetoadd = month + "/" + day + "/" + year
+    #year = year[2:]
+    datetoadd = year + "-" + month + "-" + day
+    return render(request, 'mapcal/addform.html', {'datetoadd': datetoadd})
 
 @login_required
 def delete_appt(request):

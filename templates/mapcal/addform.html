@@ -89,7 +89,7 @@ function addToMarkerCoords(txt) {
     <tr>
       <td valign="top">
   
-<form action="/mapcal/add/" method="post">
+<form action="/mapcal/{% now "Y" %}/{% now "m" %}/{% now "d" %}/add/" method="post">
   <input type="hidden" name="del_id" value="{{ appt.id }}">
   <input type="hidden" name="nummarkers" id="nummarkers" value="0">
   <input type="hidden" name="markercoords" id="markercoords">
@@ -125,11 +125,12 @@ function addToMarkerCoords(txt) {
       </td>
     </tr>
   </table>
-        
+        {{ datetoadd }}
 
 <script type="text/javascript">
   $("#datepicker").datepicker();
 $("#datepicker").datepicker("option", "dateFormat", "yy-mm-dd");
+$("#datepicker").datepicker("setDate", "{{ datetoadd }}")
 
 {% if appt %}
   $("#datepicker").datepicker("setDate",

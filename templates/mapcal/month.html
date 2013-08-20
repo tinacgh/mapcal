@@ -6,18 +6,39 @@
   <body>
     {% include "mapcal/nav.html" %}
 
-<!-- generate monthly calendar in views, with first day as sunday,
-most likely, of previous month -->
-    <table border = 1>
+
+    <table border="1" width="98%">
+    <tr>
+    <td><a href="/mapcal/{{ prevlink }}/month">&lt;&lt; previous</a></td>
+    <td colspan="5" align="center"><b>{{ longmonth }} {{ year }}</b></td>
+    <td align="right"><a href="/mapcal/{{ nextlink }}/month">next &gt;&gt;</a></td>
+    </tr>
+<tr>
+<td>Sunday</td>
+<td>Monday</td>
+<td>Tuesday</td>
+<td>Wednesday</td>
+<td>Thursday</td>
+<td>Friday</td>
+<td>Saturday</td>
+
+</tr>
+<tr>
 {% for n in placeholder %}
-<tr><td>
-    {{ n }} <br>
-    {% for day in days %}
+<td width="14%" valign="top">
+<b>
+  <a href="/mapcal/{{ yr }}/{{ mo}}/{{ n }}/add">{{ n }}</a></b>
+  <br>
+  {% for day in days %}
     {% ifequal day.d n %}
-      {{ day.detail }} <br>
+      <a href="/mapcal/{{ day.id }}/detail">{{ day.detail }}</a> <br>
     {% endifequal %}
-    {% endfor %}
-    </td></tr>
+  {% endfor %}
+  </td>
+  {% if forloop.counter|divisibleby:7 %}
+    </tr><tr>
+  {% endif %}
 {% endfor %}
+</tr>
   </body>
 </html>
