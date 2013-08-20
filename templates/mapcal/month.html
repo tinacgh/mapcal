@@ -31,7 +31,7 @@
   <br>
   {% for day in days %}
     {% ifequal day.d n %}
-      <a href="/mapcal/{{ day.id }}/detail">{{ day.detail }}</a> <br>
+      <a href="/mapcal/{{ day.id }}/detail" title="{{ day.time|date:"P" }}">{{ day.detail }}</a> <br>
     {% endifequal %}
   {% endfor %}
   </td>

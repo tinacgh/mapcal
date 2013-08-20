@@ -51,6 +51,7 @@ def monthview(request, year, month):
         day = Day(appt.time.day)
         day.detail = appt.desc
         day.id = appt.id
+        day.time = appt.time
         days.append(day)
 
     now_weekday = (timenow.weekday() + 1) % 7
