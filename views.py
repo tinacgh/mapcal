@@ -75,7 +75,7 @@ def monthview(request, year, month):
     prevlink = str(prevyear) + "/" + str(prevmonth)
     nextlink = str(nextyear) + "/" + str(nextmonth)
     long_month = timenow.strftime("%B")
-    return render(request, 'mapcal/month.html', { 'days': days, 'placeholder': placeholder, 'nextlink': nextlink, 'prevlink': prevlink, 'yr': yr, 'mo': mo, 'longmonth': long_month, 'year': yr })
+    return render(request, 'mapcal/month.html', { 'thisyear': datetime.now().year, 'thismonth': datetime.now().month, 'today': datetime.now().day, 'days': days, 'placeholder': placeholder, 'nextlink': nextlink, 'prevlink': prevlink, 'yr': yr, 'mo': mo, 'longmonth': long_month, 'year': yr })
 
 @login_required
 def alltags(request):

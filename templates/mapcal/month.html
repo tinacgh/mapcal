@@ -25,7 +25,7 @@
 </tr>
 <tr>
 {% for n in placeholder %}
-<td width="14%" valign="top">
+<td width="14%" valign="top" {% ifequal yr thisyear %} {% ifequal mo thismonth %} {% ifequal n today %}bgcolor="#ffff77"{% endifequal %} {% endifequal %} {% endifequal %}>
 <b>
   <a href="/mapcal/{{ yr }}/{{ mo}}/{{ n }}/add">{{ n }}</a></b>
   <br>
