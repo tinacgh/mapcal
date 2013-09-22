@@ -83,7 +83,7 @@ function addMarker(lat, lng) {
 
 <script type="text/javascript">
 $("#datepicker").datepicker();
-$("#datepicker").datepicker("setDate", new Date({{ appt.time|date:'Y' }}, {{ appt.time|date:'m' }} - 1, {{ appt.time|date:'d' }}));
+$("#datepicker").datepicker("setDate", new Date({{ appt.time|date:'Y' }}, {{ appt.time|date:'m' }} - 1, {{ appt.time|date:'d' }}, 9, 30, 0, 0, 0));
 </script>
 
 </body>
